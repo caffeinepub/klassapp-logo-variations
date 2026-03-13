@@ -89,7 +89,7 @@ const ALL_ASSETS = [
     filename: "klassapp-favicon.png",
   },
   {
-    src: "/assets/generated/klassapp-business-card-v2.dim_1050x600.png",
+    src: "/assets/generated/klassapp-business-card-v4.dim_1050x600.png",
     filename: "klassapp-business-card.png",
   },
   {
@@ -802,7 +802,7 @@ export default function App() {
           >
             <div className="aspect-[1.75/1] bg-slate-100 overflow-hidden">
               <img
-                src="/assets/generated/klassapp-business-card-v2.dim_1050x600.png"
+                src="/assets/generated/klassapp-business-card-v4.dim_1050x600.png"
                 alt="KlassApp business card template"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               />
@@ -824,7 +824,7 @@ export default function App() {
                 data-ocid="business-card.download.button"
                 onClick={() =>
                   downloadFile(
-                    "/assets/generated/klassapp-business-card-v2.dim_1050x600.png",
+                    "/assets/generated/klassapp-business-card-v4.dim_1050x600.png",
                     "klassapp-business-card.png",
                   )
                 }
