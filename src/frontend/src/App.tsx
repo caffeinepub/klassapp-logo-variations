@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
-import { Check, Copy, Download } from "lucide-react";
+import { Check, Copy, Download, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -38,6 +38,66 @@ const BRAND_COLORS = [
   },
 ];
 
+// ─── All downloadable assets ──────────────────────────────────────────────────
+const ALL_ASSETS = [
+  {
+    src: "/assets/generated/klassapp-primary-lockup-v4.dim_900x300.png",
+    filename: "klassapp-logo-primary.png",
+  },
+  {
+    src: "/assets/generated/klassapp-icon.dim_512x512.png",
+    filename: "klassapp-app-icon.png",
+  },
+  {
+    src: "/assets/generated/klassapp-logo-stacked-v2.dim_600x400.png",
+    filename: "klassapp-logo-stacked.png",
+  },
+  {
+    src: "/assets/generated/klassapp-logo-dark-v2.dim_800x300.png",
+    filename: "klassapp-logo-dark.png",
+  },
+  {
+    src: "/assets/generated/klassapp-social-banner-v3.dim_1500x500.png",
+    filename: "klassapp-social-banner.png",
+  },
+  {
+    src: "/assets/generated/klassapp-og-image-v3.dim_1200x630.png",
+    filename: "klassapp-og-image.png",
+  },
+  {
+    src: "/assets/generated/klassapp-email-header-v3.dim_600x150.png",
+    filename: "klassapp-email-header.png",
+  },
+  {
+    src: "/assets/generated/klassapp-post-x-v3.dim_1200x675.png",
+    filename: "klassapp-post-x.png",
+  },
+  {
+    src: "/assets/generated/klassapp-post-facebook-v3.dim_1200x630.png",
+    filename: "klassapp-post-facebook.png",
+  },
+  {
+    src: "/assets/generated/klassapp-post-linkedin-v3.dim_1200x627.png",
+    filename: "klassapp-post-linkedin.png",
+  },
+  {
+    src: "/assets/generated/klassapp-post-instagram-v3.dim_1080x1080.png",
+    filename: "klassapp-post-instagram.png",
+  },
+  {
+    src: "/assets/generated/klassapp-favicon-v3-transparent.dim_64x64.png",
+    filename: "klassapp-favicon.png",
+  },
+  {
+    src: "/assets/generated/klassapp-business-card-v2.dim_1050x600.png",
+    filename: "klassapp-business-card.png",
+  },
+  {
+    src: "/assets/generated/klassapp-pitch-deck-slide-v2.dim_1920x1080.png",
+    filename: "klassapp-pitch-deck-slide.png",
+  },
+];
+
 // ─── Social / digital assets ─────────────────────────────────────────────────
 const SOCIAL_ASSETS = [
   {
@@ -45,7 +105,7 @@ const SOCIAL_ASSETS = [
     label: "Social Banner",
     sublabel: "Twitter / LinkedIn cover",
     dimensions: "1500 × 500 px",
-    src: "/assets/generated/klassapp-social-banner.dim_1500x500.png",
+    src: "/assets/generated/klassapp-social-banner-v3.dim_1500x500.png",
     aspect: "aspect-[3/1]",
   },
   {
@@ -53,7 +113,7 @@ const SOCIAL_ASSETS = [
     label: "Open Graph Image",
     sublabel: "Link preview on social media",
     dimensions: "1200 × 630 px",
-    src: "/assets/generated/klassapp-og-image.dim_1200x630.png",
+    src: "/assets/generated/klassapp-og-image-v3.dim_1200x630.png",
     aspect: "aspect-[1.9/1]",
   },
   {
@@ -61,7 +121,7 @@ const SOCIAL_ASSETS = [
     label: "Email Header",
     sublabel: "Transactional & newsletter emails",
     dimensions: "600 × 150 px",
-    src: "/assets/generated/klassapp-email-header-v2.dim_600x150.png",
+    src: "/assets/generated/klassapp-email-header-v3.dim_600x150.png",
     aspect: "aspect-[4/1]",
   },
 ];
@@ -74,7 +134,7 @@ const POST_TEMPLATES = [
     label: "X Post Template",
     sublabel: "Standard post / link card",
     dimensions: "1200 × 675 px",
-    src: "/assets/generated/klassapp-post-x.dim_1200x675.png",
+    src: "/assets/generated/klassapp-post-x-v3.dim_1200x675.png",
     aspect: "aspect-video",
     color: "#000000",
   },
@@ -84,7 +144,7 @@ const POST_TEMPLATES = [
     label: "Facebook Post Template",
     sublabel: "Link preview & shared image",
     dimensions: "1200 × 630 px",
-    src: "/assets/generated/klassapp-post-facebook.dim_1200x630.png",
+    src: "/assets/generated/klassapp-post-facebook-v3.dim_1200x630.png",
     aspect: "aspect-[1.9/1]",
     color: "#1877F2",
   },
@@ -94,7 +154,7 @@ const POST_TEMPLATES = [
     label: "LinkedIn Post Template",
     sublabel: "Professional post image",
     dimensions: "1200 × 627 px",
-    src: "/assets/generated/klassapp-post-linkedin.dim_1200x627.png",
+    src: "/assets/generated/klassapp-post-linkedin-v3.dim_1200x627.png",
     aspect: "aspect-[1.9/1]",
     color: "#0A66C2",
   },
@@ -104,7 +164,7 @@ const POST_TEMPLATES = [
     label: "Instagram Post Template",
     sublabel: "Square feed post",
     dimensions: "1080 × 1080 px",
-    src: "/assets/generated/klassapp-post-instagram.dim_1080x1080.png",
+    src: "/assets/generated/klassapp-post-instagram-v3.dim_1080x1080.png",
     aspect: "aspect-square",
     color: "#E1306C",
   },
@@ -405,6 +465,37 @@ function PostTemplateCard({
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+
+  const downloadFile = (src: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = src;
+    a.download = filename;
+    a.click();
+  };
+
+  const downloadAll = async () => {
+    setIsDownloadingAll(true);
+    try {
+      for (const { src, filename } of ALL_ASSETS) {
+        const response = await fetch(src);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
+      toast.success("All brand assets downloaded!");
+    } catch {
+      toast.error("Download failed. Please try again.");
+    } finally {
+      setIsDownloadingAll(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster position="bottom-right" />
@@ -413,30 +504,43 @@ export default function App() {
       <header className="sticky top-0 z-20 bg-card/90 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            {/* App icon style K mark */}
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm"
-              style={{
-                background: "linear-gradient(135deg, #1E6FD9 0%, #22C55E 100%)",
-              }}
-            >
-              <span className="text-white font-extrabold font-display text-sm leading-none">
-                K
-              </span>
-            </div>
-            {/* Klass in blue, App in green */}
+            <img
+              src="/assets/generated/klassapp-icon.dim_512x512.png"
+              alt="KlassApp icon"
+              className="w-8 h-8 rounded-lg object-cover shadow-sm"
+            />
             <span className="font-extrabold font-display text-lg tracking-tight">
               <span style={{ color: "#1E6FD9" }}>Klass</span>
               <span style={{ color: "#22C55E" }}>App</span>
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <span className="hidden sm:inline text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Brand Kit
             </span>
             <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
               2026
             </span>
+            <button
+              type="button"
+              data-ocid="header.download_all.button"
+              onClick={downloadAll}
+              disabled={isDownloadingAll}
+              aria-label="Download all brand assets"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+            >
+              {isDownloadingAll ? (
+                <>
+                  <Loader2 size={13} className="animate-spin" />
+                  <span className="hidden sm:inline">Downloading...</span>
+                </>
+              ) : (
+                <>
+                  <Download size={13} />
+                  <span className="hidden sm:inline">Download All</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -490,59 +594,120 @@ export default function App() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="rounded-2xl border border-border bg-[#F8FAFC] flex items-center justify-center p-10 md:p-16 mb-6"
+            className="rounded-2xl border border-border bg-[#F8FAFC] flex items-center justify-center p-10 md:p-16 mb-4"
           >
             <img
-              src="/assets/uploads/klassapp-logo-v1-1-1.png"
+              src="/assets/generated/klassapp-primary-lockup-v4.dim_900x300.png"
               alt="KlassApp primary horizontal logo"
               className="max-w-sm md:max-w-md w-full object-contain"
             />
           </motion.div>
+          {/* Primary logo download */}
+          <div className="flex justify-end mb-6">
+            <button
+              type="button"
+              data-ocid="logo.primary.button"
+              onClick={() =>
+                downloadFile(
+                  "/assets/generated/klassapp-primary-lockup-v4.dim_900x300.png",
+                  "klassapp-logo-primary.png",
+                )
+              }
+              aria-label="Download primary logo"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-primary/8 text-primary hover:bg-primary/15 transition-colors"
+            >
+              <Download size={13} /> Download Primary Logo
+            </button>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* App Icon card */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.45 }}
               data-ocid="logo.item.1"
-              className="rounded-2xl border border-border bg-[#F8FAFC] flex flex-col items-center justify-center p-8 gap-4"
+              className="rounded-2xl border border-border overflow-hidden shadow-xs group"
             >
-              <img
-                src="/assets/generated/klassapp-icon.dim_512x512.png"
-                alt="KlassApp app icon"
-                className="w-28 h-28 object-contain rounded-2xl"
-              />
-              <div className="text-center">
-                <p className="font-bold text-sm text-foreground font-display">
-                  App Icon
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  512 × 512 px · App stores
-                </p>
+              <div className="bg-[#F8FAFC] flex flex-col items-center justify-center p-8 gap-4">
+                <img
+                  src="/assets/generated/klassapp-icon.dim_512x512.png"
+                  alt="KlassApp app icon"
+                  className="w-28 h-28 object-contain rounded-2xl"
+                />
+              </div>
+              <div className="bg-card px-5 py-4 flex items-center justify-between gap-3">
+                <div>
+                  <p className="font-bold text-sm text-foreground font-display">
+                    App Icon
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    App stores & launcher
+                  </p>
+                  <p className="text-[11px] font-mono text-primary mt-1 font-semibold">
+                    512 × 512 px
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  data-ocid="logo.icon.button"
+                  onClick={() =>
+                    downloadFile(
+                      "/assets/generated/klassapp-icon.dim_512x512.png",
+                      "klassapp-app-icon.png",
+                    )
+                  }
+                  aria-label="Download App Icon"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary/8 text-primary hover:bg-primary/15 transition-colors shrink-0"
+                >
+                  <Download size={13} /> Download
+                </button>
               </div>
             </motion.div>
 
+            {/* Stacked Wordmark card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.45 }}
               data-ocid="logo.item.2"
-              className="rounded-2xl border border-border bg-[#F8FAFC] flex flex-col items-center justify-center p-8 gap-4"
+              className="rounded-2xl border border-border overflow-hidden shadow-xs group"
             >
-              <img
-                src="/assets/generated/klassapp-logo-stacked.dim_600x400.png"
-                alt="KlassApp stacked logo"
-                className="max-w-[200px] w-full object-contain"
-              />
-              <div className="text-center">
-                <p className="font-bold text-sm text-foreground font-display">
-                  Stacked Wordmark
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  600 × 400 px · Print & web
-                </p>
+              <div className="bg-[#F8FAFC] flex flex-col items-center justify-center p-8 gap-4">
+                <img
+                  src="/assets/generated/klassapp-logo-stacked-v2.dim_600x400.png"
+                  alt="KlassApp stacked logo"
+                  className="max-w-[200px] w-full object-contain"
+                />
+              </div>
+              <div className="bg-card px-5 py-4 flex items-center justify-between gap-3">
+                <div>
+                  <p className="font-bold text-sm text-foreground font-display">
+                    Stacked Wordmark
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Print &amp; web
+                  </p>
+                  <p className="text-[11px] font-mono text-primary mt-1 font-semibold">
+                    600 × 400 px
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  data-ocid="logo.stacked.button"
+                  onClick={() =>
+                    downloadFile(
+                      "/assets/generated/klassapp-logo-stacked-v2.dim_600x400.png",
+                      "klassapp-logo-stacked.png",
+                    )
+                  }
+                  aria-label="Download Stacked Wordmark"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary/8 text-primary hover:bg-primary/15 transition-colors shrink-0"
+                >
+                  <Download size={13} /> Download
+                </button>
               </div>
             </motion.div>
           </div>
@@ -560,7 +725,7 @@ export default function App() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="rounded-2xl bg-[#0F172A] flex items-center justify-center p-10 md:p-16 relative overflow-hidden"
+            className="rounded-2xl bg-[#0F172A] flex items-center justify-center p-10 md:p-16 relative overflow-hidden mb-4"
           >
             <div
               className="absolute inset-0 opacity-[0.04]"
@@ -570,11 +735,27 @@ export default function App() {
               }}
             />
             <img
-              src="/assets/generated/klassapp-logo-dark.dim_800x300.png"
+              src="/assets/generated/klassapp-logo-dark-v2.dim_800x300.png"
               alt="KlassApp reversed logo on dark background"
               className="max-w-sm md:max-w-lg w-full object-contain relative z-10"
             />
           </motion.div>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              data-ocid="logo.dark.button"
+              onClick={() =>
+                downloadFile(
+                  "/assets/generated/klassapp-logo-dark-v2.dim_800x300.png",
+                  "klassapp-logo-dark.png",
+                )
+              }
+              aria-label="Download dark reversed logo"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-primary/8 text-primary hover:bg-primary/15 transition-colors"
+            >
+              <Download size={13} /> Download Dark Logo
+            </button>
+          </div>
         </section>
 
         {/* ── 3. Social / Digital Assets ── */}
@@ -605,10 +786,112 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── 5. Favicon ── */}
+        {/* ── 5. Business Card ── */}
+        <section data-ocid="business-card.section">
+          <SectionHeader
+            label="05 — Print"
+            title="Business Card"
+            description="Standard horizontal business card template. Print at 300 DPI for crisp results. Replace placeholder text with your details before printing."
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="rounded-2xl border border-border bg-slate-50 overflow-hidden shadow-xs group"
+          >
+            <div className="aspect-[1.75/1] bg-slate-100 overflow-hidden">
+              <img
+                src="/assets/generated/klassapp-business-card-v2.dim_1050x600.png"
+                alt="KlassApp business card template"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+            </div>
+            <div className="bg-card px-5 py-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="font-bold text-sm text-foreground font-display">
+                  Business Card Template
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Standard 3.5" × 2" print format
+                </p>
+                <p className="text-[11px] font-mono text-primary mt-1 font-semibold">
+                  1050 × 600 px · 300 DPI
+                </p>
+              </div>
+              <button
+                type="button"
+                data-ocid="business-card.download.button"
+                onClick={() =>
+                  downloadFile(
+                    "/assets/generated/klassapp-business-card-v2.dim_1050x600.png",
+                    "klassapp-business-card.png",
+                  )
+                }
+                aria-label="Download Business Card Template"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary/8 text-primary hover:bg-primary/15 transition-colors shrink-0"
+              >
+                <Download size={13} /> Download
+              </button>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* ── 6. Pitch Deck Slide ── */}
+        <section data-ocid="pitch-deck.section">
+          <SectionHeader
+            label="06 — Presentation"
+            title="Pitch Deck Title Slide"
+            description="16:9 widescreen title slide for investor presentations, demos, and school briefings. Import into Google Slides, Keynote, or PowerPoint as a background image."
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="rounded-2xl border border-border bg-slate-50 overflow-hidden shadow-xs group"
+          >
+            <div className="aspect-video bg-[#0F172A] overflow-hidden">
+              <img
+                src="/assets/generated/klassapp-pitch-deck-slide-v2.dim_1920x1080.png"
+                alt="KlassApp pitch deck title slide"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+            </div>
+            <div className="bg-card px-5 py-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="font-bold text-sm text-foreground font-display">
+                  Pitch Deck Title Slide
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Widescreen 16:9 presentation format
+                </p>
+                <p className="text-[11px] font-mono text-primary mt-1 font-semibold">
+                  1920 × 1080 px
+                </p>
+              </div>
+              <button
+                type="button"
+                data-ocid="pitch-deck.download.button"
+                onClick={() =>
+                  downloadFile(
+                    "/assets/generated/klassapp-pitch-deck-slide-v2.dim_1920x1080.png",
+                    "klassapp-pitch-deck-slide.png",
+                  )
+                }
+                aria-label="Download Pitch Deck Slide"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary/8 text-primary hover:bg-primary/15 transition-colors shrink-0"
+              >
+                <Download size={13} /> Download
+              </button>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* ── 7. Favicon ── */}
         <section data-ocid="favicon.section">
           <SectionHeader
-            label="05 — Favicon"
+            label="07 — Favicon"
             title="Favicon & Browser Icon"
             description="The favicon uses the transparent K mark. Test legibility at 16 px — if unclear, simplify the shape."
           />
@@ -627,7 +910,7 @@ export default function App() {
                 {FAVICON_SIZES.map((size) => (
                   <div key={size} className="flex flex-col items-center gap-2">
                     <img
-                      src="/assets/generated/klassapp-favicon-transparent.dim_64x64.png"
+                      src="/assets/generated/klassapp-favicon-v3-transparent.dim_64x64.png"
                       alt={`Favicon ${size}px`}
                       width={size}
                       height={size}
@@ -655,7 +938,7 @@ export default function App() {
                 {FAVICON_SIZES.map((size) => (
                   <div key={size} className="flex flex-col items-center gap-2">
                     <img
-                      src="/assets/generated/klassapp-favicon-transparent.dim_64x64.png"
+                      src="/assets/generated/klassapp-favicon-v3-transparent.dim_64x64.png"
                       alt={`Favicon ${size}px`}
                       width={size}
                       height={size}
@@ -671,10 +954,10 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── 6. Brand Colors ── */}
+        {/* ── 8. Brand Colors ── */}
         <section data-ocid="colors.section">
           <SectionHeader
-            label="06 — Color System"
+            label="08 — Color System"
             title="Brand Colors"
             description="A compact palette of five tokens. Primary Blue and Brand Green are the active brand colors. Click any swatch to copy the hex value."
           />
@@ -685,10 +968,10 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── 7. Typography ── */}
+        {/* ── 9. Typography ── */}
         <section data-ocid="typography.section">
           <SectionHeader
-            label="07 — Typography"
+            label="09 — Typography"
             title="Type System"
             description="Two typefaces form the KlassApp voice: a bold display grotesque for headings and a refined sans for everything else."
           />
@@ -776,10 +1059,10 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── 8. Usage guidelines ── */}
+        {/* ── 10. Usage guidelines ── */}
         <section data-ocid="guidelines.section">
           <SectionHeader
-            label="08 — Usage Rules"
+            label="10 — Usage Rules"
             title="Do's & Don'ts"
             description="Follow these guidelines to maintain brand consistency across all touchpoints."
           />
@@ -869,16 +1152,11 @@ export default function App() {
       <footer className="border-t border-border bg-card mt-8">
         <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{
-                background: "linear-gradient(135deg, #1E6FD9 0%, #22C55E 100%)",
-              }}
-            >
-              <span className="text-white font-extrabold font-display text-xs">
-                K
-              </span>
-            </div>
+            <img
+              src="/assets/generated/klassapp-icon.dim_512x512.png"
+              alt="KlassApp icon"
+              className="w-7 h-7 rounded-lg object-cover"
+            />
             <span className="font-bold font-display">
               <span style={{ color: "#1E6FD9" }}>Klass</span>
               <span style={{ color: "#22C55E" }}>App</span>
