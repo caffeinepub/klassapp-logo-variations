@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   BarChart3,
@@ -51,6 +50,29 @@ const FEATURES = [
   },
 ];
 
+const CLASSROOM_SCENES = [
+  {
+    src: "/assets/generated/hero-students-classroom.dim_1200x700.jpg",
+    label: "Students in Class",
+    alt: "Engaged students learning in a modern classroom",
+  },
+  {
+    src: "/assets/generated/students-science-lab.dim_1200x700.jpg",
+    label: "Science Lab",
+    alt: "Students collaborating on science experiments in a lab",
+  },
+  {
+    src: "/assets/generated/students-computer-lab.dim_1200x700.jpg",
+    label: "Computer Lab",
+    alt: "Students working on computers with teacher assistance",
+  },
+  {
+    src: "/assets/generated/teacher-reviewing-tablet.dim_1200x700.jpg",
+    label: "Teacher Reviewing Reports",
+    alt: "Teacher reviewing student reports and data on a tablet",
+  },
+];
+
 const STATS = [
   { value: "500+", label: "Schools" },
   { value: "50K+", label: "Students" },
@@ -84,7 +106,7 @@ const PLANS = [
       "Priority support",
       "Custom domain",
     ],
-    cta: "Start Free Trial",
+    cta: "Onboard your school",
   },
   {
     name: "Enterprise",
@@ -234,20 +256,8 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-base font-bold text-white shadow-lg transition-all duration-200 hover:scale-[1.03] hover:shadow-xl"
                 style={{ backgroundColor: "#1E6FD9" }}
               >
-                Start Free Trial <ArrowRight size={16} />
+                Onboard your school <ArrowRight size={16} />
               </a>
-              <Link
-                to="/branding"
-                data-ocid="hero.secondary_button"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-base font-semibold transition-all duration-200 hover:scale-[1.03]"
-                style={{
-                  border: "1.5px solid rgba(255,255,255,0.18)",
-                  color: "rgba(255,255,255,0.85)",
-                  backgroundColor: "rgba(255,255,255,0.06)",
-                }}
-              >
-                View Brand Kit
-              </Link>
             </div>
 
             {/* Product visual */}
@@ -327,6 +337,74 @@ export default function LandingPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {f.desc}
                 </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── In the Classroom ── */}
+      <section
+        data-ocid="classroom.section"
+        className="py-24"
+        style={{ backgroundColor: "#F8FAFC" }}
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-14"
+          >
+            <p
+              className="text-xs font-bold uppercase tracking-[0.2em] mb-3"
+              style={{ color: "#22C55E" }}
+            >
+              In the Classroom
+            </p>
+            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground tracking-tight">
+              Where learning comes alive
+            </h2>
+            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+              KlassApp supports every corner of the school experience — from the
+              lab to the staffroom.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+          >
+            {CLASSROOM_SCENES.map((scene, i) => (
+              <motion.div
+                key={scene.label}
+                variants={cardVariant}
+                data-ocid={`classroom.item.${i + 1}`}
+                className="group relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="aspect-[16/9] overflow-hidden">
+                  <img
+                    src={scene.src}
+                    alt={scene.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  />
+                </div>
+                {/* Caption overlay */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 px-5 py-4"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(15,23,42,0.72) 0%, transparent 100%)",
+                  }}
+                >
+                  <span className="text-sm font-semibold text-white tracking-wide">
+                    {scene.label}
+                  </span>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -533,7 +611,7 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-all duration-200 hover:scale-[1.04] hover:shadow-xl"
               style={{ backgroundColor: "white", color: "#16a34a" }}
             >
-              Start Free Trial <ArrowRight size={16} />
+              Onboard your school <ArrowRight size={16} />
             </button>
           </motion.div>
         </div>
@@ -608,14 +686,13 @@ export default function LandingPage() {
                     </a>
                   </li>
                   <li>
-                    <Link
-                      to="/branding"
+                    <a
+                      href="/branding"
                       data-ocid="footer.branding.link"
-                      className="text-sm font-semibold transition-colors hover:opacity-80"
-                      style={{ color: "#1E6FD9" }}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       Our Branding
-                    </Link>
+                    </a>
                   </li>
                 </ul>
               </div>
