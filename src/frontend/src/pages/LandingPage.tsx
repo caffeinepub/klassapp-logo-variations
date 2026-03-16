@@ -9,7 +9,8 @@ import {
   MessageSquare,
   Users,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 const FEATURES = [
   {
@@ -50,26 +51,34 @@ const FEATURES = [
   },
 ];
 
-const CLASSROOM_SCENES = [
+const AUDIENCE_TABS = [
   {
-    src: "/assets/generated/hero-students-classroom.dim_1200x700.jpg",
-    label: "Students in Class",
-    alt: "Engaged students learning in a modern classroom",
+    id: "admins",
+    label: "Administrators",
+    icon: "🏫",
+    headline: "Stop managing chaos. Start leading with clarity.",
+    subline:
+      "One platform to run your entire school — smarter, faster, and more securely than ever before.",
+    accent: "#1E6FD9",
   },
   {
-    src: "/assets/generated/students-science-lab.dim_1200x700.jpg",
-    label: "Science Lab",
-    alt: "Students collaborating on science experiments in a lab",
+    id: "teachers",
+    label: "Teachers",
+    icon: "📚",
+    headline:
+      "Spend less time on admin. More time doing what you love — teaching.",
+    subline:
+      "KlassApp handles the noise so you can focus on what actually matters.",
+    accent: "#22C55E",
   },
   {
-    src: "/assets/generated/students-computer-lab.dim_1200x700.jpg",
-    label: "Computer Lab",
-    alt: "Students working on computers with teacher assistance",
-  },
-  {
-    src: "/assets/generated/teacher-reviewing-tablet.dim_1200x700.jpg",
-    label: "Teacher Reviewing Reports",
-    alt: "Teacher reviewing student reports and data on a tablet",
+    id: "parents",
+    label: "Parents",
+    icon: "👨‍👩‍👧",
+    headline: "Always in the loop. Never in the dark.",
+    subline:
+      "Real-time updates, instant messaging, and full visibility into your child's school life — right from your pocket.",
+    accent: "#60a5fa",
   },
 ];
 
@@ -134,6 +143,129 @@ const cardVariant = {
   hidden: { opacity: 0, y: 28 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
+
+function AudienceSwitcher() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % AUDIENCE_TABS.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const active = AUDIENCE_TABS[activeIndex];
+
+  return (
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Tab buttons */}
+      <div
+        className="flex items-center justify-center gap-2 mb-6 p-1.5 rounded-2xl"
+        style={{
+          backgroundColor: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
+        {AUDIENCE_TABS.map((tab, i) => (
+          <button
+            key={tab.id}
+            type="button"
+            data-ocid={`hero.audience.tab.${i + 1}` as string}
+            onClick={() => setActiveIndex(i)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300"
+            style={
+              activeIndex === i
+                ? {
+                    backgroundColor: tab.accent,
+                    color: "white",
+                    boxShadow: `0 0 20px ${tab.accent}55`,
+                  }
+                : { color: "rgba(147,197,253,0.7)" }
+            }
+          >
+            <span className="text-base">{tab.icon}</span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Active card */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active.id}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.35 }}
+          className="relative rounded-2xl overflow-hidden p-7 text-left"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)",
+            border: `1px solid ${active.accent}44`,
+            boxShadow: `0 0 40px ${active.accent}22`,
+          }}
+        >
+          {/* Progress bar */}
+          <div
+            className="absolute top-0 left-0 h-0.5 rounded-t-2xl"
+            style={{ backgroundColor: active.accent, width: "100%" }}
+          >
+            <motion.div
+              key={`${active.id}-progress`}
+              initial={{ scaleX: 0, transformOrigin: "left" }}
+              animate={{ scaleX: 1, transformOrigin: "left" }}
+              transition={{ duration: 4, ease: "linear" }}
+              className="h-full origin-left"
+              style={{ backgroundColor: active.accent }}
+            />
+          </div>
+
+          <div
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-4"
+            style={{
+              backgroundColor: `${active.accent}22`,
+              color: active.accent,
+            }}
+          >
+            <span>{active.icon}</span>
+            For {active.label}
+          </div>
+
+          <h3
+            className="font-display font-extrabold text-xl md:text-2xl leading-tight mb-3"
+            style={{ color: "white" }}
+          >
+            {active.headline}
+          </h3>
+          <p
+            className="text-sm md:text-base leading-relaxed"
+            style={{ color: "rgba(147,197,253,0.75)" }}
+          >
+            {active.subline}
+          </p>
+
+          {/* Dot indicators */}
+          <div className="flex items-center gap-2 mt-5">
+            {AUDIENCE_TABS.map((tab, i) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveIndex(i)}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: activeIndex === i ? "20px" : "6px",
+                  height: "6px",
+                  backgroundColor:
+                    activeIndex === i ? active.accent : "rgba(255,255,255,0.2)",
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   return (
@@ -223,12 +355,12 @@ export default function LandingPage() {
                 className="text-xs font-semibold"
                 style={{ color: "#93c5fd" }}
               >
-                Built for Modern Schools
+                The Future-Ready School Platform
               </span>
             </div>
 
             <h1 className="font-display font-extrabold text-4xl md:text-6xl lg:text-7xl text-white leading-[1.1] tracking-tight mb-6">
-              Smarter School
+              Built for Schools.
               <br />
               <span
                 className="text-transparent bg-clip-text"
@@ -237,19 +369,35 @@ export default function LandingPage() {
                     "linear-gradient(135deg, #60a5fa 0%, #34d399 100%)",
                 }}
               >
-                Management
+                Powered by Tomorrow.
               </span>
             </h1>
 
             <p
-              className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10"
+              className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed mb-10"
               style={{ color: "rgba(147,197,253,0.75)" }}
             >
-              KlassApp brings together students, teachers, and administrators in
-              one beautifully simple platform.
+              KlassApp unifies your entire school ecosystem — students,
+              teachers, parents, and administrators — into one intelligent,
+              future-ready platform that transforms how modern schools connect,
+              operate, and thrive. Powered by cutting-edge AI automation and
+              blockchain-grade security, KlassApp delivers real-time
+              communication, unbreakable data privacy, and infinite scalability
+              — so your school doesn&apos;t just keep up with the future, it
+              leads it.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            {/* Audience switcher */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="mb-12"
+            >
+              <AudienceSwitcher />
+            </motion.div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="#pricing"
                 data-ocid="hero.primary_button"
@@ -259,25 +407,6 @@ export default function LandingPage() {
                 Onboard your school <ArrowRight size={16} />
               </a>
             </div>
-
-            {/* Product visual */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="relative mx-auto max-w-2xl"
-            >
-              <div
-                className="absolute inset-0 rounded-3xl blur-2xl opacity-20"
-                style={{ backgroundColor: "#1E6FD9" }}
-              />
-              <img
-                src="/assets/generated/klassapp-primary-lockup-v4.dim_900x300.png"
-                alt="KlassApp primary logo"
-                className="relative w-full object-contain rounded-2xl"
-                style={{ filter: "drop-shadow(0 0 40px rgba(30,111,217,0.4))" }}
-              />
-            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -337,74 +466,6 @@ export default function LandingPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {f.desc}
                 </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── In the Classroom ── */}
-      <section
-        data-ocid="classroom.section"
-        className="py-24"
-        style={{ backgroundColor: "#F8FAFC" }}
-      >
-        <div className="max-w-6xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-14"
-          >
-            <p
-              className="text-xs font-bold uppercase tracking-[0.2em] mb-3"
-              style={{ color: "#22C55E" }}
-            >
-              In the Classroom
-            </p>
-            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground tracking-tight">
-              Where learning comes alive
-            </h2>
-            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-              KlassApp supports every corner of the school experience — from the
-              lab to the staffroom.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-          >
-            {CLASSROOM_SCENES.map((scene, i) => (
-              <motion.div
-                key={scene.label}
-                variants={cardVariant}
-                data-ocid={`classroom.item.${i + 1}`}
-                className="group relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300"
-              >
-                <div className="aspect-[16/9] overflow-hidden">
-                  <img
-                    src={scene.src}
-                    alt={scene.alt}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                </div>
-                {/* Caption overlay */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 px-5 py-4"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(15,23,42,0.72) 0%, transparent 100%)",
-                  }}
-                >
-                  <span className="text-sm font-semibold text-white tracking-wide">
-                    {scene.label}
-                  </span>
-                </div>
               </motion.div>
             ))}
           </motion.div>
