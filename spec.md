@@ -1,24 +1,27 @@
 # KlassApp Landing Page
 
 ## Current State
-The project has all brand assets generated and available in `/assets/generated/`. The backend is a minimal Motoko canister. No frontend pages exist yet -- the previous build attempt failed.
+The app has a LandingPage at `/` and BrandKitPage at `/branding`. There is no `/register` route. Logo files exist at `/assets/klassapp-logo-v1-1.png`.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Landing page (`/`) with: sticky header, hero section, features section, social proof/stats, pricing section, CTA section, footer
-- Brand Kit page (`/branding`) containing the full brand kit UI from the previous project (all logos, social assets, post templates, colors, typography, guidelines, download buttons)
-- "Our Branding" link/button in the landing page footer that navigates to `/branding`
-- React Router for multi-page navigation
+- New `RegisterPage` component at `src/frontend/src/pages/RegisterPage.tsx`
+- Route `/register` pointing to RegisterPage in App.tsx
 
 ### Modify
-- Nothing (fresh build)
+- App.tsx: add the register route
 
 ### Remove
-- Nothing
+- Nothing removed
 
 ## Implementation Plan
-1. Set up React Router with two routes: `/` (LandingPage) and `/branding` (BrandKitPage)
-2. Build LandingPage component: sticky header with logo, hero, features, stats, pricing, CTA, footer with "Our Branding" link
-3. Build BrandKitPage component: port full brand kit UI from old App.tsx including all download functionality
-4. Ensure all image paths reference existing generated assets
+1. Create RegisterPage with full-viewport split layout (left brand panel, right form panel)
+2. Left panel: dark navy bg, KlassApp logo top-left, centered brand copy, trust checkmarks, subtle texture
+3. Right panel: white/near-white bg, registration form with 9 fields + terms checkbox
+4. Fields: School Name, Your Full Name, Your Role (select), Mobile Number, Country (select), Student Count (select), Email, Password (with toggle), Confirm Password (with toggle)
+5. Form styling per spec: white bg inputs, #E2E8F0 border, focus -> #1E6FD9 glow
+6. CTA button: green #22C55E, full width, "Create my free account"
+7. Below button: lock icon + trial text + sign-in link
+8. Mobile: hide left panel, show logo above form, light bg
+9. Register the route in App.tsx

@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 import BrandKitPage from "./pages/BrandKitPage";
 import LandingPage from "./pages/LandingPage";
+import RegisterPage from "./pages/RegisterPage";
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -30,7 +31,17 @@ const brandingRoute = createRoute({
   component: BrandKitPage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, brandingRoute]);
+const registerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/register",
+  component: RegisterPage,
+});
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  brandingRoute,
+  registerRoute,
+]);
 
 const router = createRouter({ routeTree });
 
